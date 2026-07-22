@@ -12,7 +12,7 @@ function Message({ role, content }) {
         // Agent Bot Avatar utilizing your custom JPEG icon
         <img 
           className="avatar" 
-          src="/src/assest/favicon.jpg.jpg" 
+          src="/src/assest/favicon.jpg" 
           alt="Agent Icon" 
         />
       )}
