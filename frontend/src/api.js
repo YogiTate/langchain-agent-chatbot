@@ -5,8 +5,8 @@ const API_URL =
 
 export async function sendMessage(
   sessionId,
-  prompt,
-  provider = "ollama"
+  message,
+  provider = "nvidia"
 ) {
 
   console.log("================================");
@@ -14,67 +14,44 @@ export async function sendMessage(
   console.log("API URL:", API_URL);
   console.log("Provider:", provider);
   console.log("Session:", sessionId);
-  console.log("Prompt:", prompt);
+  console.log("Message:", message);
   console.log("================================");
 
 
-  try {
+  const response = await fetch(
+    `${API_URL}/api/chat`,
+    {
+      method: "POST",
 
-    const response = await fetch(
-      `${API_URL}/api/chat`,
-      {
-        method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          session_id: sessionId,
-          message: prompt,
-          provider: provider,
-        }),
-      }
-    );
+      body: JSON.stringify({
+        session_id: sessionId,
+        message: message,
+        provider: provider,
+      }),
+    }
+  );
 
 
-    const responseText =
+  if (!response.ok) {
+
+    const errorText =
       await response.text();
 
-
-    if (!response.ok) {
-
-      console.error(
-        "Backend HTTP Error:",
-        response.status,
-        responseText
-      );
-
-      throw new Error(
-        `Backend error ${response.status}: ${responseText}`
-      );
-    }
-
-
-    const data =
-      JSON.parse(responseText);
-
-
-    console.log(
-      "AGENT RESPONSE:",
-      data
-    );
-
-
-    return data;
-
-  } catch (error) {
-
     console.error(
-      "Agent request failed:",
-      error
+      "Backend error:",
+      response.status,
+      errorText
     );
 
-    throw error;
+    throw new Error(
+      `Backend error ${response.status}: ${errorText}`
+    );
   }
+
+
+  return await response.json();
 }

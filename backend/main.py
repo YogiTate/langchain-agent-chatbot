@@ -20,20 +20,24 @@ app = FastAPI(
 # =========================================================
 
 ALLOWED_ORIGINS = [
-    # Local frontend
+    # Local development
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 
-    # Render frontend
+    # Production frontend
     "https://langchain-agent-chatbot-frontend.onrender.com",
 ]
 
 
 app.add_middleware(
     CORSMiddleware,
+
     allow_origins=ALLOWED_ORIGINS,
+
     allow_credentials=True,
+
     allow_methods=["*"],
+
     allow_headers=["*"],
 )
 
@@ -43,9 +47,12 @@ app.add_middleware(
 # =========================================================
 
 class ChatRequest(BaseModel):
+
     session_id: str
+
     message: str
-    provider: str = "ollama"
+
+    provider: str = "nvidia"
 
 
 # =========================================================
@@ -82,12 +89,18 @@ async def health():
 # =========================================================
 
 @app.post("/api/chat")
-async def chat(req: ChatRequest):
+async def chat(
+    req: ChatRequest
+):
 
     result = await run_agent(
+
         session_id=req.session_id,
+
         user_input=req.message,
+
         provider=req.provider
+
     )
 
     return result
