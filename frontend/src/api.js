@@ -1,17 +1,43 @@
-import axios from "axios";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:8000";
 
-const apiClient = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 
-export const sendMessage = async (sessionId, message) => {
-  const response = await apiClient.post("/api/chat", {
-    sessionId: sessionId,
-    prompt: message.trim(),
-  });
+export async function sendMessage(
+  sessionId,
+  message,
+  provider = "ollama"
+) {
 
-  return response.data;
-};
+  const response = await fetch(
+    `${API_URL}/api/chat`,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        session_id: sessionId,
+        message: message,
+        provider: provider,
+      }),
+    }
+  );
+
+
+  if (!response.ok) {
+
+    const errorText =
+      await response.text();
+
+    throw new Error(
+      `Backend error ${response.status}: ${errorText}`
+    );
+
+  }
+
+
+  return await response.json();
+}

@@ -1,9 +1,13 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from app.engine import run_agent
 
+
+# =========================================================
+# FASTAPI APPLICATION
+# =========================================================
 
 app = FastAPI(
     title="LangChain Agent Backend",
@@ -11,42 +15,85 @@ app = FastAPI(
 )
 
 
+# =========================================================
+# CORS
+# =========================================================
+
 app.add_middleware(
     CORSMiddleware,
+
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173",
     ],
+
     allow_credentials=True,
+
     allow_methods=["*"],
-    allow_headers=["*"]
+
+    allow_headers=["*"],
 )
 
 
-class ChatRequest(BaseModel):
-    sessionId: str
-    prompt: str
+# =========================================================
+# REQUEST MODEL
+# =========================================================
 
+class ChatRequest(BaseModel):
+
+    session_id: str
+
+    message: str
+
+    provider: str = "ollama"
+
+
+# =========================================================
+# ROOT
+# =========================================================
 
 @app.get("/")
-def root():
+async def root():
+
     return {
         "message": "LangChain Backend Running"
     }
 
 
+# =========================================================
+# HEALTH
+# =========================================================
+
 @app.get("/api/health")
-def health():
+async def health():
+
     return {
         "status": "healthy",
-        "provider": "ollama"
+        "service": "LangChain Agent Backend",
+        "providers": [
+            "ollama",
+            "nvidia"
+        ]
     }
 
 
-@app.post("/api/chat")
-async def chat(req: ChatRequest):
+# =========================================================
+# CHAT
+# =========================================================
 
-    return await run_agent(
-        session_id=req.sessionId,
-        user_input=req.prompt
+@app.post("/api/chat")
+async def chat(
+    req: ChatRequest
+):
+
+    result = await run_agent(
+
+        session_id=req.session_id,
+
+        user_input=req.message,
+
+        provider=req.provider
+
     )
+
+    return result
