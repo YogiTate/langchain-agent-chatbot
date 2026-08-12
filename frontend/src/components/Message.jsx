@@ -1,5 +1,5 @@
 import React from "react";
-
+import agentLogo from "../assest/favicon.jpg";
 function Message({ role, content }) {
   const isUser = role === "user";
 
@@ -12,7 +12,7 @@ function Message({ role, content }) {
         // Agent Bot Avatar utilizing your custom JPEG icon
         <img 
           className="avatar" 
-          src="/src/assest/favicon.jpg" 
+          src={agentLogo}
           alt="Agent Icon" 
         />
       )}

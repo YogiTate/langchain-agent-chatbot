@@ -2,7 +2,7 @@ import React, {
   useEffect,
   useRef
 } from "react";
-
+import agentLogo from "../assest/favicon.jpg";
 import Message from "./Message";
 
 
@@ -35,7 +35,7 @@ function ChatWindow({ messages = [] }) {
       <div className="empty-state">
 
         <img
-          src="/src/assest/favicon.jpg"
+          src={agentLogo}
           alt="Agent Logo"
           className="welcome-logo"
         />
