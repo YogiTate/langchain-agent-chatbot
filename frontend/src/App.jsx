@@ -38,7 +38,12 @@ function App() {
   // ollama = Local Qwen
   // nvidia = NVIDIA Cloud
   //
-  const [provider, setProvider] = useState("ollama");
+  const [provider, setProvider] =
+  useState(
+    import.meta.env.PROD
+      ? "nvidia"
+      : "ollama"
+  );
 
 
   // ---------------------------------------
