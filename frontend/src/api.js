@@ -1,14 +1,13 @@
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  "http://localhost:8000";
+  "http://127.0.0.1:8000";
 
 
 export async function sendMessage(
   sessionId,
-  message,
+  prompt,
   provider = "ollama"
 ) {
-
   const response = await fetch(
     `${API_URL}/api/chat`,
     {
@@ -19,8 +18,8 @@ export async function sendMessage(
       },
 
       body: JSON.stringify({
-        session_id: sessionId,
-        message: message,
+        sessionId: sessionId,
+        prompt: prompt,
         provider: provider,
       }),
     }
@@ -28,14 +27,11 @@ export async function sendMessage(
 
 
   if (!response.ok) {
-
-    const errorText =
-      await response.text();
+    const errorText = await response.text();
 
     throw new Error(
       `Backend error ${response.status}: ${errorText}`
     );
-
   }
 
 
