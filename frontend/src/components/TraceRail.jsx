@@ -1,12 +1,12 @@
 import React from "react";
-
+import agentLogo from "../assest/favicon.jpg";
 function TraceRail({ trace }) {
   return (
     <div className="trace-rail">
       <div className="trace-header">
         {/* Your robot icon is integrated directly into the sidebar brand! */}
         <img 
-          src="/src/assest/favicon.jpg" 
+          src={agentLogo}
           alt="Agent AI" 
           className="app-brand-icon"
         />
